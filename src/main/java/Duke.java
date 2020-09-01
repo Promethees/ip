@@ -16,7 +16,7 @@ public class Duke {
     public static String HELLO_GREET =
             " My Son, I am Promethees, who had devoted his liver to liberate humanity from the Olympian's oppression\n"
                     +" Tell me, what can I do for you?";
-    public static String GOOD_BYE = " Bye. Hope to see you again soon!";
+    public static String GOOD_BYE = " Mission accomplished!";
     public static String INSTRUCTION = "Invalid Command! Available Commands: bye, list, todo, deadline, event, done.";
     public static int TODO_INDEX = 5;
     public static int DEADLINE_INDEX = 9;
@@ -42,7 +42,7 @@ public class Duke {
         String command = words[0];
 
         while (true) {
-            System.out.println(command);
+            //System.out.println(command);
             if (command.equalsIgnoreCase("bye")) {
                 return;
             } else if (command.equalsIgnoreCase("list")) {
@@ -60,7 +60,7 @@ public class Duke {
             } else if (command.equalsIgnoreCase("deadline")) {
                 System.out.println(HORIZONTAL);
                 if (line.indexOf("/by") == -1) {
-                    System.out.println("Invalid command for deadline");
+                    System.out.println("Invalid command for deadline. Must be \n deadline <nameOfEvent> /at <time>");
                 }
                 else {
                     System.out.println(line.indexOf("/"));
@@ -77,7 +77,7 @@ public class Duke {
             } else if (command.equalsIgnoreCase("event")) {
                 System.out.println(HORIZONTAL);
                 if (line.indexOf("/at") == -1) {
-                    System.out.println("Invalid command for event");
+                    System.out.println("Invalid command for event. Must be \n event <nameOfEvent> /at <time>");
                 }
                 else {
                     String newEV = line.substring(EVENT_INDEX, line.indexOf("/at"));
@@ -105,7 +105,7 @@ public class Duke {
                         System.out.println("\t\t" + tasks[num - 1].getStatusIcon() + " " + tasks[num - 1].getDescription());
                         System.out.println("\t" + HORIZONTAL);
                     } else {
-                        System.out.println("Invalid operation with done");
+                        System.out.println("Invalid operation with done. Must be \n done <(int)taskToBeDone>");
                     }
                 }
             } else {
