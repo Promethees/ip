@@ -1,11 +1,11 @@
 public class Deadline extends Task {
-    public Deadline (String deadline, String time) {
-        super.description = deadline;
-        super.time = time;
-        super.type = "[D]";
+    public Deadline (String deadline, String timeDL) {
+        description = deadline;
+        time = timeDL;
+        type = "[D]";
     }
     public Deadline() {
-        super.description = "";
-        super.time = "";
+        description = "";
+        time = "";
     }
 }

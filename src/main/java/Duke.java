@@ -1,4 +1,3 @@
-import javax.sound.midi.SysexMessage;
 import java.util.Scanner;
 public class Duke {
     public static int MAX_TASK = 100;
@@ -42,19 +41,13 @@ public class Duke {
         String command = words[0];
 
         while (true) {
-            //System.out.println(command);
             if (command.equalsIgnoreCase("bye")) {
                 return;
             } else if (command.equalsIgnoreCase("list")) {
-                System.out.println(HORIZONTAL);
                 printTasks(countTasks, tasks);
-                System.out.println(HORIZONTAL);
             } else if (command.equalsIgnoreCase("todo")) {
                 String newTodo = line.substring(TODO_INDEX);
                 countTasks = addTodos(countTasks, tasks, newTodo);
-                System.out.println("\tGot it. I've added this task: ");
-                System.out.println("\t"+tasks[countTasks - 1].getType() + tasks[countTasks - 1].getStatusIcon() + " " + tasks[countTasks - 1].getDescription());
-                System.out.println("\tNow you have " + countTasks + " tasks in the list.");
             } else if (command.equalsIgnoreCase("deadline")) {
                 if (line.indexOf("/by") == -1) {
                     System.out.println("Invalid command for deadline. Must be \n deadline <nameOfEvent> /at <time>");
@@ -63,9 +56,6 @@ public class Duke {
                     String newDL = line.substring(EVENT_INDEX, line.indexOf("/by"));
                     String time = line.substring(line.indexOf("/by") + 3);
                     countTasks = addDeadlines(countTasks, tasks, newDL, time);
-                    System.out.println("\tGot it. I've added this task: ");
-                    System.out.println("\t" + tasks[countTasks - 1].getType() + tasks[countTasks - 1].getStatusIcon() + " " + tasks[countTasks - 1].getDescription() + " by:" + tasks[countTasks - 1].getTime());
-                    System.out.println("\tNow you have " + countTasks + " tasks in the list.");
                 }
             } else if (command.equalsIgnoreCase("event")) {
                 if (line.indexOf("/at") == -1) {
@@ -75,9 +65,6 @@ public class Duke {
                     String newEV = line.substring(EVENT_INDEX, line.indexOf("/at"));
                     String time = line.substring(line.indexOf("/at") + 3);
                     countTasks = addEvents(countTasks, tasks, newEV, time);
-                    System.out.println("\tGot it. I've added this task: ");
-                    System.out.println("\t" + tasks[countTasks - 1].getType() + tasks[countTasks - 1].getStatusIcon() + " " + tasks[countTasks - 1].getDescription() + " at:" + tasks[countTasks - 1].getTime());
-                    System.out.println("\tNow you have " + countTasks + " tasks in the list.");
                 }
             } else if (command.equalsIgnoreCase("done")) {
                 String taskToBeDone = line.substring(line.indexOf("done ") + 5);
@@ -90,13 +77,9 @@ public class Duke {
                 }
                 if (isInt) {
                     if (num <= countTasks) {
-                        System.out.println("\t" + HORIZONTAL);
-                        System.out.println("\t Nice! I've marked this task as done: ");
-                        tasks[num - 1].markAsDone();
-                        System.out.println("\t\t" + tasks[num - 1].getStatusIcon() + " " + tasks[num - 1].getDescription());
-                        System.out.println("\t" + HORIZONTAL);
+                        markTaskDone(tasks[num - 1]);
                     } else {
-                        System.out.println("Invalid operation with done. Must be \n done <(int)taskToBeDone>");
+                        System.out.println("Invalid operation with done. Must be \n done <(int)taskToBeDone>, taskToBeDone must equal or lesser than " + countTasks);
                     }
                 }
             } else {
@@ -106,6 +89,14 @@ public class Duke {
             words = line.split(" ");
             command = words[0];
         }
+    }
+
+    private static void markTaskDone(Task task) {
+        System.out.println("\t" + HORIZONTAL);
+        System.out.println("\t Nice! I've marked this task as done: ");
+        task.markAsDone();
+        System.out.println("\t\t" + task.getStatusIcon() + " " + task.getDescription());
+        System.out.println("\t" + HORIZONTAL);
     }
 
     private static void printTasks(int countTasks, Task[] tasks) {
@@ -123,59 +114,48 @@ public class Duke {
         }
         System.out.println("\t" + HORIZONTAL);
     }
-
-    private static void printTask(Task task) {
-        System.out.println("\t" + HORIZONTAL);
-        System.out.println("\t Nice! I've marked this task as done: ");
-        task.markAsDone();
-        System.out.println("\t\t" + task.getStatusIcon() + " " + task.getDescription());
-        System.out.println("\t" + HORIZONTAL);
-    }
-
-    private static int addTasks(int countTasks, Task[] tasks, String line) {
-        System.out.println("\t" + HORIZONTAL);
-        System.out.println("\t added: " + line);
-        System.out.println("\t" + HORIZONTAL);
-        tasks[countTasks] = new Task(line);
-        countTasks++;
-        return countTasks;
-    }
     private static int addTodos(int countTasks, Task[] tasks, String line) {
-        //System.out.println("\t" + HORIZONTAL);
-        //System.out.println("\t added: " + line);
-        //System.out.println("\t" + HORIZONTAL);
         tasks[countTasks] = new ToDo(line);
         countTasks++;
+        System.out.println("\tGot it. I've added this task: ");
+        System.out.println("\t"+tasks[countTasks - 1].getType() + tasks[countTasks - 1].getStatusIcon() + " " + tasks[countTasks - 1].getDescription());
+        System.out.print("\tNow you have " + countTasks + " task");
+        if (countTasks > 1)
+            System.out.print("s");
+        else System.out.print("");
+        System.out.println(" in the list.");
         return countTasks;
     }
     private static int addEvents(int countTasks, Task[] tasks, String line, String time) {
-/*        System.out.println("\t" + HORIZONTAL);
-        System.out.println("\t added: " + line);
-        System.out.println("\t" + HORIZONTAL);*/
-        tasks[countTasks] = new Event(line,time);
+        tasks[countTasks] = new Event(line, time);
         countTasks++;
+        System.out.println("\tGot it. I've added this task: ");
+        System.out.println("\t" + tasks[countTasks - 1].getType() + tasks[countTasks - 1].getStatusIcon() + " " + tasks[countTasks - 1].getDescription() + " at:" + tasks[countTasks - 1].getTime());
+        System.out.print("\tNow you have " + countTasks + " task");
+        if (countTasks > 1)
+            System.out.print("s");
+        else System.out.print("");
+        System.out.println(" in the list.");
         return countTasks;
     }
     private static int addDeadlines(int countTasks, Task[] tasks, String line, String time) {
-/*        System.out.println("\t" + HORIZONTAL);
-        System.out.println("\t added: " + line);
-        System.out.println("\t" + HORIZONTAL);*/
-        tasks[countTasks] = new Deadline(line,time);
+        tasks[countTasks] = new Deadline(line, time);
         countTasks++;
+        System.out.println("\tGot it. I've added this task: ");
+        System.out.println("\t" + tasks[countTasks - 1].getType() + tasks[countTasks - 1].getStatusIcon() + " " + tasks[countTasks - 1].getDescription() + " by:" + tasks[countTasks - 1].getTime());
+        System.out.print("\tNow you have " + countTasks + " task");
+        if (countTasks > 1)
+            System.out.print("s");
+        else System.out.print("");
+        System.out.println(" in the list.");
         return countTasks;
     }
 
     public static void main(String[] args) {
         printWelcomeGreet();
-        //String line;
-
-        //Input and read inputs from the user
-        //Scanner in = new Scanner(System.in);
-        //line = in.nextLine();
-
         Task[] tasks = new Task[MAX_TASK];
         int countTasks = 0;
-        parseInput(countTasks,tasks);
+        parseInput(countTasks, tasks);
         printGoodbye();
     }
 }

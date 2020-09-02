@@ -1,7 +1,53 @@
-Hello from
- ____        _        
-|  _ \ _   _| | _____ 
-| | | | | | | |/ / _ \
-| |_| | |_| |   <  __/
-|____/ \__,_|_|\_\___|
+ ____  ____  ____  _      _____ _____  _     _____  _____  ____
+/  __\/  __\/  _ \/ \__/|/  __//__ __\/ \ /|/  __/ /  __/ / ___\
+|  \/||  \/|| / \|| |\/|||  \    / \  | |_|||  \   |  \   |    \
+|  __/|    /| \_/|| |  |||  /_   | |  | | |||  /_  |  /_  \___ |
+\_/   \_/ \_\____/\_/  \|\____\  \_/  \_/ \|\____\ \____\ \____/
+
+--------------------------------------
+ My Son, I am Promethees, who had devoted his liver to liberate humanity from the Olympian's oppression
+ Tell me, what can I do for you?
+--------------------------------------
+	Got it. I've added this task:
+	[T]✘ Do this
+	Now you have 1 task in the list.
+	--------------------------------------
+	1.[T]✘ Do this
+	--------------------------------------
+	Got it. I've added this task:
+	[E]✘ Do that  at: Wed 12:40am
+	Now you have 2 tasks in the list.
+	Got it. I've added this task:
+	[E]✘ Go to the main event  at: Sat 15:10pm
+	Now you have 3 tasks in the list.
+	--------------------------------------
+	1.[T]✘ Do this
+	2.[E]✘ Do that (at: Wed 12:40am)
+	3.[E]✘ Go to the main event (at: Sat 15:10pm)
+	--------------------------------------
+	--------------------------------------
+	 Nice! I've marked this task as done:
+		✓ Do that
+	--------------------------------------
+Invalid operation with done. Must be
+ done <(int)taskToBeDone>, taskToBeDone must equal or lesser than 3
+	Got it. I've added this task:
+	[D]✘ ne We must study Chinese !  by: 2030
+	Now you have 4 tasks in the list.
+	--------------------------------------
+	 Nice! I've marked this task as done:
+		✓ Do this
+	--------------------------------------
+Invalid command for deadline. Must be
+ deadline <nameOfEvent> /at <time>
+	--------------------------------------
+	1.[T]✓ Do this
+	2.[E]✓ Do that (at: Wed 12:40am)
+	3.[E]✘ Go to the main event (at: Sat 15:10pm)
+	4.[D]✘ ne We must study Chinese ! (by: 2030)
+	--------------------------------------
+Invalid Command! Available Commands: bye, list, todo, deadline, event, done.
+	--------------------------------------
+	 Mission accomplished!
+	--------------------------------------
 

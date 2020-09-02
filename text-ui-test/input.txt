@@ -1,0 +1,14 @@
+todo Do this
+list
+event Do that /at Wed 12:40am
+event Go to the main event /at Sat 15:10pm
+list
+done 2
+done 5
+deadline We must study Chinese ! /by 2030
+done 1
+deadline We will go to there / by 2040
+list
+destroy all!
+bye
+

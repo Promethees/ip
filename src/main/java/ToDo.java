@@ -1,13 +1,13 @@
 public class ToDo extends Task {
     public ToDo(String taskTodo) {
-        super.description = taskTodo;
-        super.type = "[T]";
-        super.isDone = false;
-        super.time = "";
+        description = taskTodo;
+        type = "[T]";
+        isDone = false;
+        time = "";
     }
     public ToDo() {
-        super.description = "";
-        super.type = "[T]";
-        super.isDone = false;
+        description = "";
+        type = "[T]";
+        isDone = false;
     }
 }

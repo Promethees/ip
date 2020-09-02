@@ -6,13 +6,13 @@ public class Task {
     //Generator, in the main file must you "new" modifier to create the objects
     public Task(String description) {
         this.description = description;
-        this.isDone = false;
-        this.type = "";
+        isDone = false;
+        type = "";
     }
     public Task() {
-        this.description = "";
-        this.isDone = false;
-        this.type = "";
+        description = "";
+        isDone = false;
+        type = "";
     }
 
     public String getStatusIcon() {
@@ -25,10 +25,12 @@ public class Task {
         return description;
     }
 
-    public void markAsDone(){
+    public void markAsDone() {
         this.isDone = true;
     }
 
-    public String getTime() {return this.time;}
+    public String getTime() {
+        return this.time;
+    }
 
 }
