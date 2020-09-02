@@ -3,6 +3,7 @@ public class ToDo extends Task {
         super.description = taskTodo;
         super.type = "[T]";
         super.isDone = false;
+        super.time = "";
     }
     public ToDo() {
         super.description = "";

@@ -50,32 +50,24 @@ public class Duke {
                 printTasks(countTasks, tasks);
                 System.out.println(HORIZONTAL);
             } else if (command.equalsIgnoreCase("todo")) {
-                System.out.println(HORIZONTAL);
                 String newTodo = line.substring(TODO_INDEX);
                 countTasks = addTodos(countTasks, tasks, newTodo);
                 System.out.println("\tGot it. I've added this task: ");
                 System.out.println("\t"+tasks[countTasks - 1].getType() + tasks[countTasks - 1].getStatusIcon() + " " + tasks[countTasks - 1].getDescription());
                 System.out.println("\tNow you have " + countTasks + " tasks in the list.");
-                System.out.println(HORIZONTAL);
             } else if (command.equalsIgnoreCase("deadline")) {
-                System.out.println(HORIZONTAL);
                 if (line.indexOf("/by") == -1) {
                     System.out.println("Invalid command for deadline. Must be \n deadline <nameOfEvent> /at <time>");
                 }
                 else {
-                    System.out.println(line.indexOf("/"));
-                    String newDL = line.substring(DEADLINE_INDEX, line.indexOf("/by"));
+                    String newDL = line.substring(EVENT_INDEX, line.indexOf("/by"));
                     String time = line.substring(line.indexOf("/by") + 3);
-                    System.out.println(newDL);
-                    System.out.println(time);
                     countTasks = addDeadlines(countTasks, tasks, newDL, time);
                     System.out.println("\tGot it. I've added this task: ");
-                    System.out.println("\t" + tasks[countTasks - 1].getType() + tasks[countTasks - 1].getStatusIcon() + " " + tasks[countTasks - 1].getDescription() + " by: " + tasks[countTasks - 1].getTime());
+                    System.out.println("\t" + tasks[countTasks - 1].getType() + tasks[countTasks - 1].getStatusIcon() + " " + tasks[countTasks - 1].getDescription() + " by:" + tasks[countTasks - 1].getTime());
                     System.out.println("\tNow you have " + countTasks + " tasks in the list.");
-                    System.out.println(HORIZONTAL);
                 }
             } else if (command.equalsIgnoreCase("event")) {
-                System.out.println(HORIZONTAL);
                 if (line.indexOf("/at") == -1) {
                     System.out.println("Invalid command for event. Must be \n event <nameOfEvent> /at <time>");
                 }
@@ -86,7 +78,6 @@ public class Duke {
                     System.out.println("\tGot it. I've added this task: ");
                     System.out.println("\t" + tasks[countTasks - 1].getType() + tasks[countTasks - 1].getStatusIcon() + " " + tasks[countTasks - 1].getDescription() + " at:" + tasks[countTasks - 1].getTime());
                     System.out.println("\tNow you have " + countTasks + " tasks in the list.");
-                    System.out.println(HORIZONTAL);
                 }
             } else if (command.equalsIgnoreCase("done")) {
                 String taskToBeDone = line.substring(line.indexOf("done ") + 5);
@@ -126,7 +117,7 @@ public class Duke {
             if (tasks[i-1].getType() == "[E]") {
                 System.out.println("\t" + i + "." + tasks[i - 1].getType() + tasks[i - 1].getStatusIcon() + " " + tasks[i - 1].getDescription() + "(at:" +tasks[i - 1].getTime() +")");
             }
-            else{
+            else if (tasks[i-1].getType() == "[T]") {
                 System.out.println("\t" + i + "." + tasks[i - 1].getType() + tasks[i - 1].getStatusIcon() + " " + tasks[i - 1].getDescription() + tasks[i - 1].getTime());
             }
         }
