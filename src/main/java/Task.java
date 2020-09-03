@@ -26,11 +26,11 @@ public class Task {
     }
 
     public void markAsDone() {
-        this.isDone = true;
+        isDone = true;
     }
 
     public String getTime() {
-        return this.time;
+        return time;
     }
 
 }
