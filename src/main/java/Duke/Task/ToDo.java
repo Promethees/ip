@@ -1,15 +1,18 @@
-public class Event extends Task {
+package Duke.Task;
+
+public class ToDo extends Task {
     protected String time;
-    public Event (String event, String timeEV) {
-        description = event;
-        time = timeEV;
-        type = "[E]";
+    public ToDo(String taskTodo) {
+        description = taskTodo;
+        type = "[T]";
         isDone = false;
-    }
-    public Event() {
-        description = "";
         time = "";
+    }
+    public ToDo() {
+        description = "";
+        type = "[T]";
         isDone = false;
+        time = "";
     }
     @Override
     public String getStatusIcon() {

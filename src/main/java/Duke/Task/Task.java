@@ -1,3 +1,7 @@
+package Duke.Task;
+
+import Duke.Duke;
+
 public abstract class Task {
     //Generator, in the main file must you "new" modifier to create the objects
     protected String type;

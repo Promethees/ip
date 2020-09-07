@@ -1,15 +1,16 @@
-public class Deadline extends Task {
+package Duke.Task;
+
+public class Event extends Task {
     protected String time;
-    public Deadline (String deadline, String timeDL) {
-        description = deadline;
-        time = timeDL;
-        type = "[D]";
+    public Event (String event, String timeEV) {
+        description = event;
+        time = timeEV;
+        type = "[E]";
         isDone = false;
     }
-    public Deadline() {
+    public Event() {
         description = "";
         time = "";
-        type = "[D]";
         isDone = false;
     }
     @Override
