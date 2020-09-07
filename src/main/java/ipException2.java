@@ -1,2 +1,3 @@
-public class ipException2 extends Exception{
+public class ipException2 extends Exception {
+
 }
