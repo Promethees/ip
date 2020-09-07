@@ -1,16 +1,21 @@
-public class ToDo extends Task {
+package Duke.Task;
+
+import Duke.Duke;
+import Duke.Task.Task;
+
+public class Deadline extends Task {
     protected String time;
-    public ToDo(String taskTodo) {
-        description = taskTodo;
-        type = "[T]";
+    public Deadline (String deadline, String timeDL) {
+        description = deadline;
+        time = timeDL;
+        type = "[D]";
         isDone = false;
-        time = "";
     }
-    public ToDo() {
+    public Deadline() {
         description = "";
-        type = "[T]";
-        isDone = false;
         time = "";
+        type = "[D]";
+        isDone = false;
     }
     @Override
     public String getStatusIcon() {

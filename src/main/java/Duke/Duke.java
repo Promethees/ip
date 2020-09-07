@@ -1,12 +1,22 @@
+package Duke;
+
+import Duke.Exceptions.ipException;
+import Duke.Exceptions.ipException2;
+import Duke.Exceptions.ipException3;
+import Duke.Task.Deadline;
+import Duke.Task.Event;
+import Duke.Task.Task;
+import Duke.Task.ToDo;
+
 import java.util.Scanner;
 public class Duke {
     /*
         Notes for the Exceptions:
-        +ipException: Check if after "todo, deadline, event" command is an empty string or not. More specifically, check whether
+        +Duke.Exceptions.ipException: Check if after "todo, deadline, event" command is an empty string or not. More specifically, check whether
                                        "/by" or "/at" have been included in "deadline" or "event" yet
-        +ipException2: Check if available commands "bye list todo deadline event done" have been stated correctly or not.
-        Check if Task and Time in "deadline" or "event" are empty strings or not
-        +ipException3: avoid increment of countTasks when invalid syntax is called
+        +Duke.Exceptions.ipException2: Check if available commands "bye list todo deadline event done" have been stated correctly or not.
+        Check if Duke.Task.Task and Time in "deadline" or "event" are empty strings or not
+        +Duke.Exceptions.ipException3: avoid increment of countTasks when invalid syntax is called
      */
     public static int MAX_TASK = 100;
     public static String DUKE =  " ____        _        \n"
