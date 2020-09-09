@@ -35,9 +35,9 @@ public class Duke {
                     +" Tell me, what can I do for you?";
     public static String GOOD_BYE = " Mission accomplished!";
     public static String INSTRUCTION = "Invalid Command! Available Commands: bye, list, todo, deadline, event, done.";
-    public static int TODO_INDEX = 5;
+    public static int TODO_INDEX = 4;
     public static int DEADLINE_INDEX = 9;
-    public static int EVENT_INDEX = 8;
+    public static int EVENT_INDEX = 6;
     public static String REJECT_TODO = "Invalid command for todo. Must be \ntodo <nameOfTodo>; name";
     public static String REJECT_DL = "Invalid command for deadline. Must be \ndeadline <nameOfEvent> /by <time>";
     public static String REJECT_EV = "Invalid command for event. Must be \nevent <nameOfEvent> /at <time>";
@@ -67,6 +67,7 @@ public class Duke {
         } else if (command.equalsIgnoreCase("todo")) {
             try {
                 String newTodo = analyseTodo(line);
+                newTodo = newTodo.trim();
                 addTodos(countTasks, tasks, newTodo);
             } catch (ipException e) {
                 System.out.println(REJECT_TODO);
@@ -136,6 +137,9 @@ public class Duke {
             else if (command.equalsIgnoreCase("deadline")) {
                 countTasks ++;
             }
+            else if (command.equalsIgnoreCase("event")) {
+                countTasks ++;
+            }
             else if (command.equalsIgnoreCase("done")) {
                 return countTasks;
             }
@@ -171,9 +175,9 @@ public class Duke {
 
     public static String extractFrom(String line, String extractor) throws ipException2 {
         String newTask = line.substring(0, line.indexOf(extractor));
-        System.out.println(newTask);
+        //System.out.println(newTask);
         if (newTask.trim().length() != 0) {
-            return newTask;
+            return newTask.trim();
         }
         else {
             throw new ipException2();
@@ -181,9 +185,9 @@ public class Duke {
     }
 
     public static String extractTimeFrom(String line, String extractor) throws ipException2 {
-        String newTime = line.substring(line.indexOf(extractor)+extractor.length() + 1 );
+        String newTime = line.substring(line.indexOf(extractor) + extractor.length() + 1 );
         if (newTime.trim().length() != 0) {
-            return newTime;
+            return newTime.trim();
         }
         else {
             throw new ipException2();
@@ -203,10 +207,10 @@ public class Duke {
             System.out.println("\t" + HORIZONTAL);
             for (int i = 1; i <= countTasks; i++) {
                 if (tasks[i - 1].getType() == "[D]") {
-                    System.out.println("\t" + i + "." + tasks[i - 1].getType() + tasks[i - 1].getStatusIcon() + " " + tasks[i - 1].getDescription() + "(by:" + tasks[i - 1].getTime() + ")");
+                    System.out.println("\t" + i + "." + tasks[i - 1].getType() + tasks[i - 1].getStatusIcon() + " " + tasks[i - 1].getDescription() + " (by:" + tasks[i - 1].getTime() + ")");
                 }
                 if (tasks[i - 1].getType() == "[E]") {
-                    System.out.println("\t" + i + "." + tasks[i - 1].getType() + tasks[i - 1].getStatusIcon() + " " + tasks[i - 1].getDescription() + "(at:" + tasks[i - 1].getTime() + ")");
+                    System.out.println("\t" + i + "." + tasks[i - 1].getType() + tasks[i - 1].getStatusIcon() + " " + tasks[i - 1].getDescription() + " (at:" + tasks[i - 1].getTime() + ")");
                 } else if (tasks[i - 1].getType() == "[T]") {
                     System.out.println("\t" + i + "." + tasks[i - 1].getType() + tasks[i - 1].getStatusIcon() + " " + tasks[i - 1].getDescription() + tasks[i - 1].getTime());
                 }
