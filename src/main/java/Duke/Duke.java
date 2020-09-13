@@ -10,6 +10,11 @@ import Duke.Task.ToDo;
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Duke {
     /*
         Notes for the Exceptions:
@@ -44,12 +49,14 @@ public class Duke {
     public static String REJECT_TODO = "Invalid command for todo. Must be \ntodo <nameOfTodo>; name";
     public static String REJECT_DL = "Invalid command for deadline. Must be \ndeadline <nameOfEvent> /by <time>";
     public static String REJECT_EV = "Invalid command for event. Must be \nevent <nameOfEvent> /at <time>";
-    public static String REJECT_DONE = "Invalid operation with done. Must be \ndone <(int)taskToBeDone>, taskToBeDone must equal or lesser than ";
-    public static String REJECT_REMOVE = "Invalid operation with remove. Must be \nremove <(int)taskToBeRemoved>, taskToBeRemoved must equal or lesser than ";
+    public static String REJECT_DONE = "Invalid operation with done. Must be \ndone <(int)taskToBeDone>, taskToBeDone must be greater than 0 and  equal or lesser than ";
+    public static String REJECT_REMOVE = "Invalid operation with remove. Must be \nremove <(int)taskToBeRemoved>, taskToBeRemoved must be greater than 0 and equal or lesser than ";
     public static String EMPTY_LIST = "This list is currently empty. You can use \"todo\", \"deadline\", \"event\" to add tasks";
     public static String ADD_TASK = "\tGot it. I've added this task: ";
     public static String DONE_TASK = "\t Nice! I've marked this task as done: ";
-    public static String REMOVE_TASK = "\t Noted! I've removed this task: ";
+    public static String REMOVE_TASK = "\tNoted! I've removed this task: ";
+    private static File previousList = new File("data/duke.txt");
+
     public static void printWelcomeGreet() {
         System.out.println(PROMETHEES);
         System.out.println(HORIZONTAL);
@@ -116,7 +123,7 @@ public class Duke {
                 System.out.println(REJECT_DONE + countTasks);
             }
             if (isInt) {
-                if (num <= countTasks) {
+                if (num <= countTasks && num > 0) {
                     markTaskDone(num - 1);
                 } else {
                     System.out.println(REJECT_DONE + countTasks);
@@ -124,23 +131,20 @@ public class Duke {
             }
         } else if (command.equalsIgnoreCase("remove")) {
             String taskToBeDone = line.substring(line.indexOf("remove ") + REMOVE_INDEX);
-            boolean isInt = true;
-            int num = countTasks + 1;
+            int num;
             try {
                 num = Integer.parseInt(taskToBeDone);
             } catch (NumberFormatException e) {
-                isInt = false;
                 System.out.println(REJECT_REMOVE + countTasks);
+                throw new ipException3();
             }
-            if (isInt) {
-                if (num <= countTasks) {
-                    removeTask(num - 1,countTasks - 1);
-                } else {
-                    System.out.println(REJECT_REMOVE + countTasks);
-                }
+            if (num <= countTasks && num > 0) {
+                removeTask(num - 1, countTasks);
+            } else {
+                System.out.println(REJECT_REMOVE + countTasks);
+                throw new ipException3();
             }
-        }
-        else {
+        } else {
             throw new ipException2();
         }
         return command;
@@ -165,7 +169,7 @@ public class Duke {
                 countTasks ++;
             }
             else if (command.equalsIgnoreCase("remove")) {
-                countTasks--;
+                countTasks --;
             }
             else if (command.equalsIgnoreCase("done")) {
                 return countTasks;
@@ -232,7 +236,7 @@ public class Duke {
         System.out.println(REMOVE_TASK);
         printTaskInfo(index);
         tasks.remove(tasks.get(index));
-        System.out.print("Now you have " + countTasks + " task");
+        System.out.print("\tNow you have " + (countTasks - 1) + " task");
         if (countTasks > 1) {
             System.out.println("s in the list.");
         } else {
@@ -301,14 +305,74 @@ public class Duke {
         System.out.println(" in the list.");
     }
 
+    private static int convertFile(File f) throws FileNotFoundException{
+        int numLine = 0;
+        Scanner s = new Scanner(f);
+        while (s.hasNext()) {
+            String currentLine = s.nextLine();
+            String[] data = currentLine.split("\\|");
+            //System.out.println(data.length);
+            for (int i = 0; i < data.length; i++) {
+                data[i] = data[i].trim();
+            }
+            if (data[0].equalsIgnoreCase("T")) {
+                tasks.add(new ToDo(data[2]));
+                if (data[1].equalsIgnoreCase("1")) {
+                    tasks.get(numLine).markAsDone();
+                }
+            } else if (data[0].equalsIgnoreCase("E")) {
+                tasks.add(new Event(data[2],data[3]));
+                if (data[1].equalsIgnoreCase("1")) {
+                    tasks.get(numLine).markAsDone();
+                }
+            } else if (data[0].equalsIgnoreCase("D")) {
+                tasks.add(new Deadline(data[2],data[3]));
+                if (data[1].equalsIgnoreCase("1")) {
+                    tasks.get(numLine).markAsDone();
+                }
+            }
+            numLine++;
+        }
+        return numLine;
+    }
+
+    public static int convertFromFile(File f) {
+        try {
+            return convertFile(f);
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+            return 0;
+        }
+    }
+
+    private static void recordFile(File f, int countTasks) throws IOException {
+        FileWriter fw = new FileWriter(f);
+        for (int i = 0; i < countTasks; i++) {
+            fw.write(tasks.get(i).getTypeWOBrackets() + " | " + tasks.get(i).isDoneOneZero() + " | " + tasks.get(i).getDescription() + tasks.get(i).getTimeWithSlash() + "\n");
+        }
+        fw.close();
+    }
+
+    public static void recordListToFile(File f, int countTasks) {
+        try {
+            recordFile(f, countTasks);
+        } catch (IOException e) {
+            System.out.println("Something went wrong: " + e.getMessage());
+        }
+    }
+
     public static void main(String[] args) {
         printWelcomeGreet();
-        int countTasks = 0;
+        int countTasks = convertFromFile(previousList);
         while(countTasks != -1) {
             //System.out.println(countTasks);
             Scanner in = new Scanner(System.in);
             String line = in.nextLine();
+            int preCountTasks = countTasks;
             countTasks = resolveCommand(line, countTasks);
+            if (countTasks == -1) {
+                recordListToFile(previousList, preCountTasks);
+            } else recordListToFile(previousList, countTasks);
         }
         printGoodbye();
     }

@@ -16,4 +16,12 @@ public abstract class Task {
 
     public abstract String getTime();
 
+    public abstract boolean isDone();
+
+    public abstract String getTypeWOBrackets();
+
+    public abstract int isDoneOneZero();
+
+    public abstract String getTimeWithSlash();
+
 }
