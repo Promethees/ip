@@ -9,6 +9,7 @@ import Duke.Task.Task;
 import Duke.Task.ToDo;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 public class Duke {
     /*
         Notes for the Exceptions:
@@ -18,7 +19,7 @@ public class Duke {
         Check if Duke.Task.Task and Time in "deadline" or "event" are empty strings or not
         +Duke.Exceptions.ipException3: avoid increment of countTasks when invalid syntax is called
      */
-    public static int MAX_TASK = 100;
+    private static  ArrayList<Task> tasks = new ArrayList<>();
     public static String DUKE =  " ____        _        \n"
                                 + "|  _ \\ _   _| | _____ \n"
                                 + "| | | | | | | |/ / _ \\\n"
@@ -38,12 +39,17 @@ public class Duke {
     public static int TODO_INDEX = 4;
     public static int DEADLINE_INDEX = 9;
     public static int EVENT_INDEX = 6;
+    public static int DONE_INDEX = 5;
+    public static int REMOVE_INDEX = 7;
     public static String REJECT_TODO = "Invalid command for todo. Must be \ntodo <nameOfTodo>; name";
     public static String REJECT_DL = "Invalid command for deadline. Must be \ndeadline <nameOfEvent> /by <time>";
     public static String REJECT_EV = "Invalid command for event. Must be \nevent <nameOfEvent> /at <time>";
     public static String REJECT_DONE = "Invalid operation with done. Must be \ndone <(int)taskToBeDone>, taskToBeDone must equal or lesser than ";
+    public static String REJECT_REMOVE = "Invalid operation with remove. Must be \nremove <(int)taskToBeRemoved>, taskToBeRemoved must equal or lesser than ";
     public static String EMPTY_LIST = "This list is currently empty. You can use \"todo\", \"deadline\", \"event\" to add tasks";
-
+    public static String ADD_TASK = "\tGot it. I've added this task: ";
+    public static String DONE_TASK = "\t Nice! I've marked this task as done: ";
+    public static String REMOVE_TASK = "\t Noted! I've removed this task: ";
     public static void printWelcomeGreet() {
         System.out.println(PROMETHEES);
         System.out.println(HORIZONTAL);
@@ -57,7 +63,7 @@ public class Duke {
         System.out.println("\t" +HORIZONTAL);
     }
 
-    public static String parseCommand(String line, int countTasks, Task[] tasks) throws ipException3, ipException2 {
+    public static String parseCommand(String line, int countTasks) throws ipException3, ipException2 {
         String[] words = line.split(" ");
         String command = words[0];
         if (command.equalsIgnoreCase("bye")) {
@@ -68,7 +74,7 @@ public class Duke {
             try {
                 String newTodo = analyseTodo(line);
                 newTodo = newTodo.trim();
-                addTodos(countTasks, tasks, newTodo);
+                addTodos(countTasks, newTodo);
             } catch (ipException e) {
                 System.out.println(REJECT_TODO);
                 throw new ipException3(); //Throw to this exception to avoid increment in countTasks
@@ -78,7 +84,7 @@ public class Duke {
                 String DL = analyseDL(line);
                 String newDL = extractFrom(DL,"/by");
                 String time = extractTimeFrom(DL,"/by");
-                addDeadlines(countTasks, tasks, newDL, time);
+                addDeadlines(countTasks, newDL, time);
             } catch (ipException e) {
                 System.out.println(REJECT_DL);
                 throw new ipException3(); //Throw to this exception to avoid increment in countTasks
@@ -91,7 +97,7 @@ public class Duke {
                 String EV = analyseEV(line);
                 String newEV = extractFrom(EV,"/at");
                 String time = extractTimeFrom(EV,"/at");
-                addEvents(countTasks, tasks, newEV, time);
+                addEvents(countTasks, newEV, time);
             } catch (ipException e) {
                 System.out.println(REJECT_EV);
                 throw new ipException3(); //Throw to this exception to avoid increment in countTasks
@@ -100,7 +106,7 @@ public class Duke {
                 throw new ipException3();
             }
         } else if (command.equalsIgnoreCase("done")) {
-            String taskToBeDone = line.substring(line.indexOf("done ") + 5);
+            String taskToBeDone = line.substring(line.indexOf("done ") + DONE_INDEX);
             boolean isInt = true;
             int num = countTasks + 1;
             try {
@@ -111,25 +117,43 @@ public class Duke {
             }
             if (isInt) {
                 if (num <= countTasks) {
-                    markTaskDone(tasks[num - 1]);
+                    markTaskDone(num - 1);
                 } else {
                     System.out.println(REJECT_DONE + countTasks);
                 }
             }
-        } else {
+        } else if (command.equalsIgnoreCase("remove")) {
+            String taskToBeDone = line.substring(line.indexOf("remove ") + REMOVE_INDEX);
+            boolean isInt = true;
+            int num = countTasks + 1;
+            try {
+                num = Integer.parseInt(taskToBeDone);
+            } catch (NumberFormatException e) {
+                isInt = false;
+                System.out.println(REJECT_REMOVE + countTasks);
+            }
+            if (isInt) {
+                if (num <= countTasks) {
+                    removeTask(num - 1,countTasks - 1);
+                } else {
+                    System.out.println(REJECT_REMOVE + countTasks);
+                }
+            }
+        }
+        else {
             throw new ipException2();
         }
         return command;
     }
 
-    private static int resolveCommand(String line, int countTasks, Task[] tasks) {
+    private static int resolveCommand(String line, int countTasks) {
         try {
-            String command = parseCommand(line, countTasks, tasks);
+            String command = parseCommand(line, countTasks);
             if (command.equalsIgnoreCase("bye")) {
                 return -1;
             }
             else if (command.equalsIgnoreCase("list")) {
-                printTasks(countTasks, tasks);
+                printTasks(countTasks);
             }
             else if (command.equalsIgnoreCase("todo")) {
                 countTasks ++;
@@ -139,6 +163,9 @@ public class Duke {
             }
             else if (command.equalsIgnoreCase("event")) {
                 countTasks ++;
+            }
+            else if (command.equalsIgnoreCase("remove")) {
+                countTasks--;
             }
             else if (command.equalsIgnoreCase("done")) {
                 return countTasks;
@@ -175,7 +202,6 @@ public class Duke {
 
     public static String extractFrom(String line, String extractor) throws ipException2 {
         String newTask = line.substring(0, line.indexOf(extractor));
-        //System.out.println(newTask);
         if (newTask.trim().length() != 0) {
             return newTask.trim();
         }
@@ -194,26 +220,44 @@ public class Duke {
         }
     }
 
-    private static void markTaskDone(Task task) {
+    private static void markTaskDone(int index) {
         System.out.println("\t" + HORIZONTAL);
-        System.out.println("\t Nice! I've marked this task as done: ");
-        task.markAsDone();
-        System.out.println("\t\t" + task.getStatusIcon() + " " + task.getDescription());
+        System.out.println(DONE_TASK);
+        tasks.get(index).markAsDone();
+        System.out.println("\t\t" + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription());
+        System.out.println("\t" + HORIZONTAL);
+    }
+    private static void removeTask(int index, int countTasks) {
+        System.out.println("\t" + HORIZONTAL);
+        System.out.println(REMOVE_TASK);
+        printTaskInfo(index);
+        tasks.remove(tasks.get(index));
+        System.out.print("Now you have " + countTasks + " task");
+        if (countTasks > 1) {
+            System.out.println("s in the list.");
+        } else {
+            System.out.println(" in the list.");
+        }
         System.out.println("\t" + HORIZONTAL);
     }
 
-    private static void printTasks(int countTasks, Task[] tasks) {
+    private static void printTaskInfo(int index) {
+        if (tasks.get(index).getType() == "[D]") {
+            System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (by:" + tasks.get(index).getTime() + ")");
+        }
+        if (tasks.get(index).getType() == "[E]") {
+            System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (at:" + tasks.get(index).getTime() + ")");
+        } else if (tasks.get(index).getType() == "[T]") {
+            System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + tasks.get(index).getTime());
+        }
+    }
+
+    private static void printTasks(int countTasks) {
         if (countTasks > 0) {
             System.out.println("\t" + HORIZONTAL);
             for (int i = 1; i <= countTasks; i++) {
-                if (tasks[i - 1].getType() == "[D]") {
-                    System.out.println("\t" + i + "." + tasks[i - 1].getType() + tasks[i - 1].getStatusIcon() + " " + tasks[i - 1].getDescription() + " (by:" + tasks[i - 1].getTime() + ")");
-                }
-                if (tasks[i - 1].getType() == "[E]") {
-                    System.out.println("\t" + i + "." + tasks[i - 1].getType() + tasks[i - 1].getStatusIcon() + " " + tasks[i - 1].getDescription() + " (at:" + tasks[i - 1].getTime() + ")");
-                } else if (tasks[i - 1].getType() == "[T]") {
-                    System.out.println("\t" + i + "." + tasks[i - 1].getType() + tasks[i - 1].getStatusIcon() + " " + tasks[i - 1].getDescription() + tasks[i - 1].getTime());
-                }
+                System.out.print("\t" + i + ".");
+                printTaskInfo(i-1);
             }
             System.out.println("\t" + HORIZONTAL);
         } else {
@@ -221,11 +265,11 @@ public class Duke {
         }
     }
 
-    private static void addTodos(int countTasks, Task[] tasks, String line) {
-        tasks[countTasks] = new ToDo(line);
+    private static void addTodos(int countTasks, String line) {
+        tasks.add(new ToDo(line));
         countTasks++;
-        System.out.println("\tGot it. I've added this task: ");
-        System.out.println("\t"+tasks[countTasks - 1].getType() + tasks[countTasks - 1].getStatusIcon() + " " + tasks[countTasks - 1].getDescription());
+        System.out.println(ADD_TASK);
+        System.out.println("\t" + tasks.get(countTasks - 1).getType() + tasks.get(countTasks - 1).getStatusIcon() + " " + tasks.get(countTasks - 1).getDescription());
         System.out.print("\tNow you have " + countTasks + " task");
         if (countTasks > 1)
             System.out.print("s");
@@ -233,11 +277,11 @@ public class Duke {
         System.out.println(" in the list.");
     }
 
-    private static void addEvents(int countTasks, Task[] tasks, String line, String time) {
-        tasks[countTasks] = new Event(line, time);
+    private static void addEvents(int countTasks, String line, String time) {
+        tasks.add(new Event(line,time));
         countTasks++;
-        System.out.println("\tGot it. I've added this task: ");
-        System.out.println("\t" + tasks[countTasks - 1].getType() + tasks[countTasks - 1].getStatusIcon() + " " + tasks[countTasks - 1].getDescription() + " at:" + tasks[countTasks - 1].getTime());
+        System.out.println(ADD_TASK);
+        System.out.println("\t" + tasks.get(countTasks - 1).getType() + tasks.get(countTasks - 1).getStatusIcon() + " " + tasks.get(countTasks - 1).getDescription() + " at:" + tasks.get(countTasks - 1).getTime());
         System.out.print("\tNow you have " + countTasks + " task");
         if (countTasks > 1)
             System.out.print("s");
@@ -245,11 +289,11 @@ public class Duke {
         System.out.println(" in the list.");
     }
 
-    private static void addDeadlines(int countTasks, Task[] tasks, String line, String time) {
-        tasks[countTasks] = new Deadline(line, time);
+    private static void addDeadlines(int countTasks, String line, String time) {
+        tasks.add(new Deadline(line,time));
         countTasks++;
-        System.out.println("\tGot it. I've added this task: ");
-        System.out.println("\t" + tasks[countTasks - 1].getType() + tasks[countTasks - 1].getStatusIcon() + " " + tasks[countTasks - 1].getDescription() + " by:" + tasks[countTasks - 1].getTime());
+        System.out.println(ADD_TASK);
+        System.out.println("\t" + tasks.get(countTasks - 1).getType() + tasks.get(countTasks - 1).getStatusIcon() + " " + tasks.get(countTasks - 1).getDescription() + " by:" + tasks.get(countTasks - 1).getTime());
         System.out.print("\tNow you have " + countTasks + " task");
         if (countTasks > 1)
             System.out.print("s");
@@ -259,12 +303,12 @@ public class Duke {
 
     public static void main(String[] args) {
         printWelcomeGreet();
-        Task[] tasks = new Task[MAX_TASK];
         int countTasks = 0;
         while(countTasks != -1) {
+            //System.out.println(countTasks);
             Scanner in = new Scanner(System.in);
             String line = in.nextLine();
-            countTasks = resolveCommand(line, countTasks, tasks);
+            countTasks = resolveCommand(line, countTasks);
         }
         printGoodbye();
     }
