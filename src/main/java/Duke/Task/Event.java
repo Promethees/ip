@@ -33,4 +33,23 @@ public class Event extends Task {
     public String getTime() {
         return time;
     }
+    @Override
+    public boolean isDone() {
+        return isDone;
+    }
+    @Override
+    public String getTypeWOBrackets() {
+        String type = this.type.substring(1,2);
+        return type;
+    }
+    @Override
+    public int isDoneOneZero() {
+        if (this.isDone) {
+            return 1;
+        } else return 0;
+    }
+    @Override
+    public String getTimeWithSlash() {
+        return " | " + this.time;
+    }
 }
