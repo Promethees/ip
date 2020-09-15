@@ -341,8 +341,14 @@ public class Duke {
         try {
             return convertFile(f);
         } catch (FileNotFoundException e) {
-            System.out.println("File not found");
-            return 0;
+            //System.out.println("File not found");
+            try {
+                f.createNewFile();
+                return 0;
+            } catch (IOException err) {
+                err.printStackTrace();
+                return 0;
+            }
         }
     }
 
