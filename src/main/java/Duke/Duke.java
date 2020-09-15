@@ -55,7 +55,7 @@ public class Duke {
     public static String ADD_TASK = "\tGot it. I've added this task: ";
     public static String DONE_TASK = "\t Nice! I've marked this task as done: ";
     public static String REMOVE_TASK = "\tNoted! I've removed this task: ";
-    private static File previousList = new File("data/duke.txt");
+    private static File previousList = new File("./data/duke.txt");
 
     public static void printWelcomeGreet() {
         System.out.println(PROMETHEES);
@@ -231,6 +231,7 @@ public class Duke {
         System.out.println("\t\t" + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription());
         System.out.println("\t" + HORIZONTAL);
     }
+
     private static void removeTask(int index, int countTasks) {
         System.out.println("\t" + HORIZONTAL);
         System.out.println(REMOVE_TASK);
