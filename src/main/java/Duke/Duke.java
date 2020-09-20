@@ -7,55 +7,20 @@ import Duke.Task.Deadline;
 import Duke.Task.Event;
 import Duke.Task.Task;
 import Duke.Task.ToDo;
-
-import java.util.Scanner;
-import java.util.ArrayList;
+import static Duke.Constants.constants.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class Duke {
-    /*
-        Notes for the Exceptions:
-        +Duke.Exceptions.ipException: Check if after "todo, deadline, event" command is an empty string or not. More specifically, check whether
-                                       "/by" or "/at" have been included in "deadline" or "event" yet
-        +Duke.Exceptions.ipException2: Check if available commands "bye list todo deadline event done" have been stated correctly or not.
-        Check if Duke.Task.Task and Time in "deadline" or "event" are empty strings or not
-        +Duke.Exceptions.ipException3: avoid increment of countTasks when invalid syntax is called
-     */
     private static  ArrayList<Task> tasks = new ArrayList<>();
-    public static String DUKE =  " ____        _        \n"
-                                + "|  _ \\ _   _| | _____ \n"
-                                + "| | | | | | | |/ / _ \\\n"
-                                + "| |_| | |_| |   <  __/\n"
-                                + "|____/ \\__,_|_|\\_\\___|\n";
-    public static String PROMETHEES =    " ____  ____  ____  _      _____ _____  _     _____  _____  ____\n"
-                                        +"/  __\\/  __\\/  _ \\/ \\__/|/  __//__ __\\/ \\ /|/  __/ /  __/ / ___\\\n"
-                                        +"|  \\/||  \\/|| / \\|| |\\/|||  \\    / \\  | |_|||  \\   |  \\   |    \\\n"
-                                        +"|  __/|    /| \\_/|| |  |||  /_   | |  | | |||  /_  |  /_  \\___ |\n"
-                                        +"\\_/   \\_/ \\_\\____/\\_/  \\|\\____\\  \\_/  \\_/ \\|\\____\\ \\____\\ \\____/\n";
-    public static String HORIZONTAL = "--------------------------------------";
-    public static String HELLO_GREET =
-            " My Child, I am Promethees, who had devoted his liver to liberate humanity from the Olympian's oppression\n"
-                    +" Tell me, what can I do for you?";
-    public static String GOOD_BYE = " Mission accomplished!";
-    public static String INSTRUCTION = "Invalid Command! Available Commands: bye, list, todo, deadline, event, done.";
-    public static int TODO_INDEX = 4;
-    public static int DEADLINE_INDEX = 9;
-    public static int EVENT_INDEX = 6;
-    public static int DONE_INDEX = 5;
-    public static int REMOVE_INDEX = 7;
-    public static String REJECT_TODO = "Invalid command for todo. Must be \ntodo <nameOfTodo>; name";
-    public static String REJECT_DL = "Invalid command for deadline. Must be \ndeadline <nameOfEvent> /by <time>";
-    public static String REJECT_EV = "Invalid command for event. Must be \nevent <nameOfEvent> /at <time>";
-    public static String REJECT_DONE = "Invalid operation with done. Must be \ndone <(int)taskToBeDone>, taskToBeDone must be greater than 0 and  equal or lesser than ";
-    public static String REJECT_REMOVE = "Invalid operation with remove. Must be \nremove <(int)taskToBeRemoved>, taskToBeRemoved must be greater than 0 and equal or lesser than ";
-    public static String EMPTY_LIST = "This list is currently empty. You can use \"todo\", \"deadline\", \"event\" to add tasks";
-    public static String ADD_TASK = "\tGot it. I've added this task: ";
-    public static String DONE_TASK = "\t Nice! I've marked this task as done: ";
-    public static String REMOVE_TASK = "\tNoted! I've removed this task: ";
-    private static String DIR = "duke.txt";
+
     private static File previousList = new File(DIR);
 
     public static void printWelcomeGreet() {
@@ -145,7 +110,15 @@ public class Duke {
                 System.out.println(REJECT_REMOVE + countTasks);
                 throw new ipException3();
             }
-        } else {
+        } else if (command.equalsIgnoreCase("find")) {
+            String taskToBeFound = line.substring(line.indexOf("find ") + FIND_INDEX);
+            try {
+                find(taskToBeFound, countTasks);
+            } catch (ipException e) {
+                System.out.println(REJECT_FIND);
+            }
+        }
+        else {
             throw new ipException2();
         }
         return command;
@@ -249,10 +222,14 @@ public class Duke {
 
     private static void printTaskInfo(int index) {
         if (tasks.get(index).getType() == "[D]") {
-            System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (by:" + tasks.get(index).getTime() + ")");
+            LocalDate dateCoverted = LocalDate.parse(tasks.get(index).getTime());
+            System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (by:" + dateCoverted.format(DateTimeFormatter.ofPattern("MMM d yyyy")) + ")");
+            //System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (by:" + tasks.get(index).getTime() + ")");
         }
         if (tasks.get(index).getType() == "[E]") {
-            System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (at:" + tasks.get(index).getTime() + ")");
+            LocalDate dateCoverted = LocalDate.parse(tasks.get(index).getTime());
+            System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (at:" + dateCoverted.format(DateTimeFormatter.ofPattern("MMM d yyyy")) + ")");
+            //System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (at:" + tasks.get(index).getTime() + ")");
         } else if (tasks.get(index).getType() == "[T]") {
             System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + tasks.get(index).getTime());
         }
@@ -305,6 +282,25 @@ public class Duke {
             System.out.print("s");
         else System.out.print("");
         System.out.println(" in the list.");
+    }
+
+    private static void find(String keyword, int countTasks) throws ipException {
+        if (countTasks > 0) {
+            int count = 0;
+            for (int i = 0; i < countTasks; i++) {
+                if (tasks.get(i).getDescription().contains(keyword)) {
+                    System.out.print("\t" + (i + 1) + ".");
+                    printTaskInfo(i);
+                    count ++;
+                }
+            }
+            if (count == 0) {
+                System.out.println(NOTFOUND_ITEM);
+            } else return;
+        } else {
+            //System.out.println(EMPTY_LIST);
+            throw new ipException();
+        }
     }
 
     private static int convertFile(File f) throws FileNotFoundException{
