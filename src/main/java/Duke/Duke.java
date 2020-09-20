@@ -55,7 +55,8 @@ public class Duke {
     public static String ADD_TASK = "\tGot it. I've added this task: ";
     public static String DONE_TASK = "\t Nice! I've marked this task as done: ";
     public static String REMOVE_TASK = "\tNoted! I've removed this task: ";
-    private static File previousList = new File("./data/duke.txt");
+    private static String DIR = "duke.txt";
+    private static File previousList = new File(DIR);
 
     public static void printWelcomeGreet() {
         System.out.println(PROMETHEES);
@@ -344,6 +345,7 @@ public class Duke {
             //System.out.println("File not found");
             try {
                 f.createNewFile();
+                System.out.println("duke.txt aka the data file created!");
                 return 0;
             } catch (IOException err) {
                 err.printStackTrace();
