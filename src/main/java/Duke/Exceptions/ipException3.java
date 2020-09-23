@@ -1,7 +1,7 @@
-package Duke.Exceptions;
+package duke.exceptions;
 
-import Duke.Duke;
+import duke.Duke;
 
-public class ipException3 extends Exception {
+public class IpException3 extends Exception {
 
 }

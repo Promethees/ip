@@ -1,6 +1,6 @@
-package Duke.Constants;
+package duke.constants;
 
-public final class constants {
+public final class Constants {
      /*
         Notes for the Exceptions:
         +Duke.Exceptions.ipException: Check if after "todo, deadline, event" command is an empty string or not. More specifically, check whether
@@ -43,4 +43,5 @@ public final class constants {
     public static final String REMOVE_TASK = "\tNoted! I've removed this task: ";
     public static final String NOTFOUND_ITEM = "\tSorry, but we can't find this in our list";
     public static final String DIR = "duke.txt";
+    public static final String REJECT_DATE = "\tInvalid type for date, please follow the format YYYY-MM-DD";
 }

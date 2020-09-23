@@ -1,6 +1,6 @@
-package Duke.Task;
+package duke.task;
 
-import Duke.Duke;
+import duke.Duke;
 
 public abstract class Task {
     //Generator, in the main file must you "new" modifier to create the objects
