@@ -4,16 +4,26 @@ import static duke.Duke.tasks;
 import static duke.Duke.ui;
 import static duke.constants.Constants.*;
 
-import duke.exceptions.IpException;
-import duke.exceptions.IpException2;
-import duke.exceptions.IpException3;
-
+import duke.exceptions.UnableToHandleCommandException;
+import duke.exceptions.SyntaxErrorException;
+import duke.exceptions.CountTasksNotChangedException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class Parser {
-    public static String parseCommand(String line, int countTasks) throws IpException3, IpException2 {
+    /** Screening the input of user and execute
+     *  appropriate tasks depends on the command detected
+     *
+     *
+     * @return the detected command extracted from user input for further analysis
+     * @param countTasks number of current tasks in the list
+     * @param line user input
+     * @throws SyntaxErrorException if no valid command is detected from user's input
+     * @throws CountTasksNotChangedException Throw to this exception to avoid increment in countTasks
+     * (when Todo, Deadline, or Event commands are not stated properly)
+     */
+    public static String parseCommand(String line, int countTasks) throws SyntaxErrorException, CountTasksNotChangedException {
         String[] words = line.split(" ");
         String command = words[0];
         if (command.equalsIgnoreCase("bye")) {
@@ -25,9 +35,9 @@ public class Parser {
                 String newTodo = analyseTodo(line);
                 newTodo = newTodo.trim();
                 addTodos(countTasks, newTodo);
-            } catch (IpException e) {
+            } catch (UnableToHandleCommandException e) {
                 ui.printRejectTodo();
-                throw new IpException3(); //Throw to this exception to avoid increment in countTasks
+                throw new CountTasksNotChangedException(); //Throw to this exception to avoid increment in countTasks
             }
         } else if (command.equalsIgnoreCase("deadline")) {
             try {
@@ -40,14 +50,14 @@ public class Parser {
                     //System.out.println(dateCoverted);
                 } catch (DateTimeParseException e) {
                     ui.printRejectDate();
-                    throw new IpException3();
+                    throw new CountTasksNotChangedException();
                 }
-            } catch (IpException e) {
+            } catch (UnableToHandleCommandException e) {
                 ui.printRejectDeadline();
-                throw new IpException3(); //Throw to this exception to avoid increment in countTasks
-            } catch (IpException2 e) {
+                throw new CountTasksNotChangedException(); //Throw to this exception to avoid increment in countTasks
+            } catch (SyntaxErrorException e) {
                 ui.printRejectDeadline();
-                throw new IpException3();
+                throw new CountTasksNotChangedException();
             }
         } else if (command.equalsIgnoreCase("event")) {
             try {
@@ -59,14 +69,14 @@ public class Parser {
                     addEvents(countTasks, newEV, time);
                 } catch (DateTimeParseException e) {
                     ui.printRejectDate();
-                    throw new IpException3();
+                    throw new CountTasksNotChangedException();
                 }
-            } catch (IpException e) {
+            } catch (UnableToHandleCommandException e) {
                 ui.printRejectEvent();
-                throw new IpException3(); //Throw to this exception to avoid increment in countTasks
-            } catch (IpException2 e) {
+                throw new CountTasksNotChangedException(); //Throw to this exception to avoid increment in countTasks
+            } catch (SyntaxErrorException e) {
                 ui.printRejectEvent();
-                throw new IpException3();
+                throw new CountTasksNotChangedException();
             }
         } else if (command.equalsIgnoreCase("done")) {
             String taskToBeDone = line.substring(line.indexOf("done ") + DONE_INDEX);
@@ -92,27 +102,38 @@ public class Parser {
                 num = Integer.parseInt(taskToBeDone);
             } catch (NumberFormatException e) {
                 ui.printRejectRemove();
-                throw new IpException3();
+                throw new CountTasksNotChangedException();
             }
             if (num <= countTasks && num > 0) {
                 removeTask(num - 1, countTasks);
             } else {
                 ui.printRejectDone();
-                throw new IpException3();
+                throw new CountTasksNotChangedException();
             }
         } else if (command.equalsIgnoreCase("find")) {
             String taskToBeFound = line.substring(line.indexOf("find ") + FIND_INDEX);
             try {
                 find(taskToBeFound, countTasks);
-            } catch (IpException e) {
+            } catch (UnableToHandleCommandException e) {
                 ui.printRejectFind();
             }
         }
         else {
-            throw new IpException2();
+            throw new SyntaxErrorException();
         }
         return command;
     }
+
+    /**Set countTasks to pertinent value after parsing user's input
+     * increase by 1 if a task is added
+     * decrease by 1 if a task is deleted
+     * remain if syntax errors occur or "list" is called
+     * set to -1 if "bye" command is called
+     *
+     * @param line user's input
+     * @param countTasks number of tasks available in the ArrayList
+     * @return countTasks after the whole process of analysing
+     */
     public static int resolveCommand(String line, int countTasks) {
         try {
             String command = parseCommand(line, countTasks);
@@ -137,56 +158,92 @@ public class Parser {
             else if (command.equalsIgnoreCase("done")) {
                 return countTasks;
             }
-        } catch (IpException2 e) {
+        } catch (SyntaxErrorException e) {
             System.out.println(INSTRUCTION);
             return countTasks;
-        } catch (IpException3 e) {
+        } catch (CountTasksNotChangedException e) {
             return countTasks;
         }
         return countTasks;
     }
 
-    private static String analyseTodo(String line) throws IpException {
+    /**Return the name of Todo task to be added to the list
+     *
+     * @param line User's input
+     * @return expect name of the Todo task
+     * @throws UnableToHandleCommandException detects syntax errors
+     */
+    private static String analyseTodo(String line) throws UnableToHandleCommandException {
         if (line.substring(TODO_INDEX).trim().length() == 0) {
-            throw new IpException();
+            throw new UnableToHandleCommandException();
         }
         else return line.substring(TODO_INDEX);
     }
 
-    private static String analyseDL(String line) throws IpException {
+    /**Return the name of Deadline task to be added to the list
+     *
+     * @param line User's input
+     * @return expect name of the Deadline task
+     * @throws UnableToHandleCommandException detects syntax errors
+     */
+    private static String analyseDL(String line) throws UnableToHandleCommandException {
         if (line.indexOf("/by") == -1) {
-            throw new IpException();
+            throw new UnableToHandleCommandException();
         }
         else return line.substring(DEADLINE_INDEX);
     }
 
-    private static String analyseEV(String line) throws IpException {
+    /**Return the name of Event task to be added to the list
+     *
+     * @param line User's input
+     * @return expect name of the Event task
+     * @throws UnableToHandleCommandException detects syntax errors
+     */
+    private static String analyseEV(String line) throws UnableToHandleCommandException {
         if (line.indexOf("/at") == -1) {
-            throw new IpException();
+            throw new UnableToHandleCommandException();
         }
         else return line.substring(EVENT_INDEX);
     }
 
-    private static String extractFrom(String line, String extractor) throws IpException2 {
+    /**Extract the Name of the tasks for Deadline and Todo with assigned delimiters
+     *
+     * @param line
+     * @param extractor delimiter for Deadline ("/by") and Event ("/at")
+     * @return the name of the task
+     * @throws SyntaxErrorException if any syntax error is detected
+     */
+    private static String extractFrom(String line, String extractor) throws SyntaxErrorException {
         String newTask = line.substring(0, line.indexOf(extractor));
         if (newTask.trim().length() != 0) {
             return newTask.trim();
         }
         else {
-            throw new IpException2();
+            throw new SyntaxErrorException();
         }
     }
 
-    private static String extractTimeFrom(String line, String extractor) throws IpException2 {
+    /**Extract the Time of the tasks for Deadline and Todo with assigned delimiters
+     *
+     * @param line
+     * @param extractor delimiter for Deadline ("/by") and Event ("/at")
+     * @return the name of the task
+     * @throws SyntaxErrorException if any syntax error is detected
+     */
+    private static String extractTimeFrom(String line, String extractor) throws SyntaxErrorException {
         String newTime = line.substring(line.indexOf(extractor) + extractor.length() + 1 );
         if (newTime.trim().length() != 0) {
             return newTime.trim();
         }
         else {
-            throw new IpException2();
+            throw new SyntaxErrorException();
         }
     }
 
+    /**When command "done" is called, set status of named task to "done"
+     *
+     * @param index to index of Task of be mark as done
+     */
     private static void markTaskDone(int index) {
         System.out.println("\t" + HORIZONTAL);
         System.out.println(DONE_TASK);
@@ -195,6 +252,11 @@ public class Parser {
         System.out.println("\t" + HORIZONTAL);
     }
 
+    /**When command "remove" is called, remove the task with the named index from the ArrayList
+     *
+     * @param index index of Task to be removed from the ArrayList
+     * @param countTasks number of current tasks in the list before deleting
+     */
     private static void removeTask(int index, int countTasks) {
         System.out.println("\t" + HORIZONTAL);
         System.out.println(REMOVE_TASK);
@@ -209,6 +271,10 @@ public class Parser {
         System.out.println("\t" + HORIZONTAL);
     }
 
+    /**Print the information of certain task to be called
+     *
+     * @param index index of Task to be printed out
+     */
     public static void printTaskInfo(int index) {
         if (tasks.get(index).getType() == "[D]") {
             LocalDate dateCoverted = LocalDate.parse(tasks.get(index).getTime());
@@ -224,6 +290,10 @@ public class Parser {
         }
     }
 
+    /**Print all tasks' info existed in the ArrayList
+     *
+     * @param countTasks number of current task in the ArrayList
+     */
     public static void printTasks(int countTasks) {
         if (countTasks > 0) {
             System.out.println("\t" + HORIZONTAL);
@@ -237,6 +307,11 @@ public class Parser {
         }
     }
 
+    /**Add a Todo task to the ArrayList and print out its information
+     *
+     * @param countTasks number of current tasks exist in the ArrayList, for printing purpose only
+     * @param line users' input
+     */
     private static void addTodos(int countTasks, String line) {
         tasks.add(new ToDo(line));
         countTasks++;
@@ -249,6 +324,11 @@ public class Parser {
         System.out.println(" in the list.");
     }
 
+    /**Add an Event task to the ArrayList and print out its information
+     *
+     * @param countTasks number of current tasks exist in the ArrayList, for printing purpose only
+     * @param line users' input
+     */
     private static void addEvents(int countTasks, String line, String time) {
         tasks.add(new Event(line,time));
         countTasks++;
@@ -261,6 +341,11 @@ public class Parser {
         System.out.println(" in the list.");
     }
 
+    /**Add a Deadline task to the ArrayList and print out its information
+     *
+     * @param countTasks number of current tasks exist in the ArrayList, for printing purpose only
+     * @param line users' input
+     */
     private static void addDeadlines(int countTasks, String line, String time) {
         tasks.add(new Deadline(line,time));
         countTasks++;
@@ -273,7 +358,13 @@ public class Parser {
         System.out.println(" in the list.");
     }
 
-    private static void find(String keyword, int countTasks) throws IpException {
+    /**Find the tasks that contain desired keywords
+     *
+     * @param keyword keyword to be found in the tasks in the ArrayList
+     * @param countTasks number of current tasks in the ArrayList
+     * @throws UnableToHandleCommandException detects syntax errors or logical errors in the function
+     */
+    private static void find(String keyword, int countTasks) throws UnableToHandleCommandException {
         if (countTasks > 0) {
             int count = 0;
             for (int i = 0; i < countTasks; i++) {
@@ -288,7 +379,7 @@ public class Parser {
             } else return;
         } else {
             //System.out.println(EMPTY_LIST);
-            throw new IpException();
+            throw new UnableToHandleCommandException();
         }
     }
 
