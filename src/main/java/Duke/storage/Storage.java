@@ -12,7 +12,12 @@ import java.util.Scanner;
 
 import static duke.Duke.tasks;
 public class Storage {
-
+    /**This function reads data stored in data file and coverts it into ArrayList structure
+     *
+     * @param f data file storing the information of the tasks
+     * @return total tasks detected in the File
+     * @throws FileNotFoundException when the file is not found
+     */
     private static int convertFile(File f) throws FileNotFoundException {
         int numLine = 0;
         Scanner s = new Scanner(f);
@@ -20,7 +25,6 @@ public class Storage {
             while (s.hasNext()) {
                 String currentLine = s.nextLine();
                 String[] data = currentLine.split("\\|");
-                //System.out.println(data.length);
                 for (int i = 0; i < data.length; i++) {
                     data[i] = data[i].trim();
                 }
@@ -48,7 +52,14 @@ public class Storage {
         return numLine;
     }
 
+    /**Check if the data file exists or not, creates "duke.txt" in "data" directory if not
+     *
+     * @param f file to be processed
+     */
     public static int convertFromFile(File f) {
+        File folder = new File("data");
+        boolean bool = folder.mkdirs(); // If folder doesn't exist, then create it
+
         try {
             return convertFile(f);
         } catch (FileNotFoundException e) {
@@ -64,6 +75,12 @@ public class Storage {
         }
     }
 
+    /**Write data from ArrayList structure to text form in directory "data/duke.txt"
+     *
+     * @param f file to be processed
+     * @param countTasks total number of tasks/lines in the data
+     * @throws IOException IO error
+     */
     private static void recordFile(File f, int countTasks) throws IOException {
         FileWriter fw = new FileWriter(f);
         for (int i = 0; i < countTasks; i++) {
@@ -72,6 +89,11 @@ public class Storage {
         fw.close();
     }
 
+    /**Record the file or print error message
+     *
+      * @param f data file to be processed
+     * @param countTasks total number of tasks
+     */
     public static void recordListToFile(File f, int countTasks) {
         try {
             recordFile(f, countTasks);
