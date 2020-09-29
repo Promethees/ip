@@ -276,17 +276,21 @@ public class Parser {
      * @param index index of Task to be printed out
      */
     public static void printTaskInfo(int index) {
-        if (tasks.get(index).getType() == "[D]") {
-            LocalDate dateCoverted = LocalDate.parse(tasks.get(index).getTime());
-            System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (by:" + dateCoverted.format(DateTimeFormatter.ofPattern("MMM d yyyy")) + ")");
-            //System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (by:" + tasks.get(index).getTime() + ")");
-        }
-        if (tasks.get(index).getType() == "[E]") {
-            LocalDate dateCoverted = LocalDate.parse(tasks.get(index).getTime());
-            System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (at:" + dateCoverted.format(DateTimeFormatter.ofPattern("MMM d yyyy")) + ")");
-            //System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (at:" + tasks.get(index).getTime() + ")");
-        } else if (tasks.get(index).getType() == "[T]") {
-            System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + tasks.get(index).getTime());
+        try {
+            if (tasks.get(index).getType() == "[D]") {
+                LocalDate dateCoverted = LocalDate.parse(tasks.get(index).getTime());
+                System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (by:" + dateCoverted.format(DateTimeFormatter.ofPattern("MMM d yyyy")) + ")");
+                //System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (by:" + tasks.get(index).getTime() + ")");
+            }
+            if (tasks.get(index).getType() == "[E]") {
+                LocalDate dateCoverted = LocalDate.parse(tasks.get(index).getTime());
+                System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (at:" + dateCoverted.format(DateTimeFormatter.ofPattern("MMM d yyyy")) + ")");
+                //System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + " (at:" + tasks.get(index).getTime() + ")");
+            } else if (tasks.get(index).getType() == "[T]") {
+                System.out.println("\t" + tasks.get(index).getType() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription() + tasks.get(index).getTime());
+            }
+        } catch (DateTimeParseException e) {
+            System.out.println("\tThere is something wrong with the format in the data file!");
         }
     }
 

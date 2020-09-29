@@ -24,7 +24,7 @@ public final class Constants {
             " My Child, I am Promethees, who had devoted his liver to liberate humanity from the Olympian's oppression\n"
                     +" Tell me, what can I do for you?";
     public static final String GOOD_BYE = " Mission accomplished!";
-    public static final String INSTRUCTION = "Invalid Command! Available Commands: bye, list, todo, deadline, event, done.";
+    public static final String INSTRUCTION = "Invalid Command! Available Commands: bye, list, todo, deadline, event, done, find, remove.";
     public static final int TODO_INDEX = 4;
     public static final int DEADLINE_INDEX = 9;
     public static final int EVENT_INDEX = 6;
@@ -42,6 +42,7 @@ public final class Constants {
     public static final String DONE_TASK = "\t Nice! I've marked this task as done: ";
     public static final String REMOVE_TASK = "\tNoted! I've removed this task: ";
     public static final String NOTFOUND_ITEM = "\tSorry, but we can't find this in our list";
-    public static final String DIR = "duke.txt";
+    //public static final String DIR = "duke.txt";
+    public static final String DIR = "data/duke.txt"; //address of saved data
     public static final String REJECT_DATE = "\tInvalid type for date, please follow the format YYYY-MM-DD";
 }
