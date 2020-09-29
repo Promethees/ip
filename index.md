@@ -1,8 +1,8 @@
 ## Welcome to Promethees - The Greek legendary version of Duke!
 
-You can file and download [JAR file](https://github.com/Promethees/ip/releases/tag/v0.1.2) of the project here and type in the command line portal at the same repository as your downloaded JAR file `java -jar ip.jar` to start the program. 
+You can file and download JAR file of the project [here](https://github.com/Promethees/ip/releases/tag/v0.2) and type in the command line portal at the same repository as your downloaded JAR file `java -jar ip.jar` to start the program. 
 
-[Source code](https://github.com/Promethees/ip) of the project. 
+Prerequisite of using: having Java11 installed on your computer.
 
 ### Available commands
 
