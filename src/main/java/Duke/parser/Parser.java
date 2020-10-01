@@ -107,7 +107,7 @@ public class Parser {
             if (num <= countTasks && num > 0) {
                 removeTask(num - 1, countTasks);
             } else {
-                ui.printRejectDone();
+                ui.printRejectRemove();
                 throw new CountTasksNotChangedException();
             }
         } else if (command.equalsIgnoreCase("find")) {
