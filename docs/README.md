@@ -6,7 +6,7 @@
 
 [1. Introduction](#1-introduction) <br>
 [2. Quick start](#2-quick-start) <br>
-[3. Features](#3-features) <br>
+[3. Features](#3-Features) <br>
 &nbsp;&nbsp;&nbsp;&nbsp;[3.1 Adding a todo](#31-adding-a-todo-todo) <br>
 &nbsp;&nbsp;&nbsp;&nbsp;[3.2 Adding an event](#32-adding-an-event-event) <br>
 &nbsp;&nbsp;&nbsp;&nbsp;[3.3 Adding a deadline](#33-adding-a-deadline-deadline) <br>
