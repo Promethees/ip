@@ -11,10 +11,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;[3.2 Adding an event](#32-adding-an-event-event) <br>
 &nbsp;&nbsp;&nbsp;&nbsp;[3.3 Adding a deadline](#33-adding-a-deadline-deadline) <br>
 &nbsp;&nbsp;&nbsp;&nbsp;[3.4 Listing tasks](#34-listing-all-the-tasks-list) <br>
-&nbsp;&nbsp;&nbsp;&nbsp;[3.5 Marking a task as done](#35-done-a-task-done) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;[3.5 Marking a task as done](#35-marking-a-task-as-done-done) <br>
 &nbsp;&nbsp;&nbsp;&nbsp;[3.6 Finding tasks](#36-finding-a-task-find) <br>
 &nbsp;&nbsp;&nbsp;&nbsp;[3.7 Removing a task](#37-removing-a-task-remove) <br>
-&nbsp;&nbsp;&nbsp;&nbsp;[3.8 Exiting](#38-existing-the-program-bye) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;[3.8 Exiting](#38-exiting-the-program-bye) <br>
 [4. Command summary](#4-command-summary)
 
 ## 1. Introduction
@@ -112,7 +112,7 @@ Format: `list`
 	--------------------------------------
 ```
 
-### 3.5. Mark a task as done `done`
+### 3.5. Marking a task as done `done`
 Marks a task as done and updates the record.
 
 Format: `done <INDEX>`
@@ -157,7 +157,7 @@ Format: `remove <INDEX>`
 ```
 
 
-### 3.9. Exiting the program: `bye`
+### 3.8. Exiting the program: `bye`
 Terminates the program and saves the recorded information to *~/data/duke.txt*
 
 Format: `bye`
