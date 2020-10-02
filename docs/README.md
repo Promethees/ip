@@ -139,7 +139,7 @@ Format: `find <KEYWORD>`
 	2.	[E]✘ team meeting (at:Dec 3 2020)
 ```
 
-### 3.7. Deleting a task `remove`
+### 3.7. Removing a task `remove`
 Deletes a task from the list and updates the record.
 
 Format: `remove <INDEX>`
